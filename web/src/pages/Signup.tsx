@@ -46,7 +46,6 @@ export default () => {
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        console.log(values);
         const response = await signup({
           variables: {
             name: values.name,
