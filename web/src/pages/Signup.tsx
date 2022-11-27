@@ -1,5 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
@@ -41,38 +42,44 @@ export default () => {
   const navigate = useNavigate();
   const [signup, { data }] = useMutation(SIGNUP_SCHEMA);
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        const response = await signup({
-          variables: {
-            name: values.name,
-            email: values.email,
-            password: values.password,
-          },
-        });
-        localStorage.setItem("token", response.data.signup.token);
-        setSubmitting(false);
-        navigate("/");
-      }}
-    >
-      <Form>
-        <Field name="name" type="text" placeholder="name" />
-        <ErrorMessage name="name" component={"div"} />
-        <Field name="email" type="text" placeholder="email" />
-        <ErrorMessage name="email" component={"div"} />
-        <Field name="password" type="password" placeholder="password" />
-        <ErrorMessage name="password" component={"div"} />
-        <Field
-          name="confirmPassword"
-          type="password"
-          placeholder="confirmPassword"
-        />
-        <ErrorMessage name="confirmPassword" component={"div"} />
-        <button type="submit">Sign Up</button>
-      </Form>
-    </Formik>
+    <div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async (values, { setSubmitting }) => {
+          setSubmitting(true);
+          const response = await signup({
+            variables: {
+              name: values.name,
+              email: values.email,
+              password: values.password,
+            },
+          });
+          localStorage.setItem("token", response.data.signup.token);
+          setSubmitting(false);
+          navigate("/");
+        }}
+      >
+        <Form>
+          <Field name="name" type="text" placeholder="name" />
+          <ErrorMessage name="name" component={"div"} />
+          <Field name="email" type="text" placeholder="email" />
+          <ErrorMessage name="email" component={"div"} />
+          <Field name="password" type="password" placeholder="password" />
+          <ErrorMessage name="password" component={"div"} />
+          <Field
+            name="confirmPassword"
+            type="password"
+            placeholder="confirmPassword"
+          />
+          <ErrorMessage name="confirmPassword" component={"div"} />
+          <button type="submit">Sign Up</button>
+        </Form>
+      </Formik>
+      <div>Already have an account?</div>
+      <div>
+        <Link to="/login">Log in</Link>
+      </div>
+    </div>
   );
 };
