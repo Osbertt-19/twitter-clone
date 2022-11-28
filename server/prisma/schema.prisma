@@ -8,21 +8,59 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  name     String?
-  posts    Post[]
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  name         String?
+  tweets       Tweet[]   @relation("own_tweets")
+  liked_tweets Tweet[]   @relation("liked_tweets")
+  comments     Comment[]
+  replies      Reply[]
+  followedBy   Follows[] @relation("following")
+  following    Follows[] @relation("follower")
 }
 
-model Post {
+model Tweet {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  content     String
+  liked_users User[]    @relation("liked_tweets")
+  author      User?     @relation("own_tweets", fields: [authorId], references: [id])
+  authorId    Int?
+  comments    Comment[]
+}
+
+model Comment {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
+  content   String
+  likes     Int      @default(0)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?
+  tweet     Tweet?   @relation(fields: [tweetId], references: [id])
+  tweetId   Int?
+  reply     Reply[]
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  likes     Int      @default(0)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId Int?
+}
+
+model Follows {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  Int
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId Int
+
+  @@id([followerId, followingId])
 }

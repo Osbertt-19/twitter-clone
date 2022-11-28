@@ -12,14 +12,13 @@ import {
 import { DateTimeResolver } from 'graphql-scalars'
 import { Query } from './schema/query'
 import { Mutation } from './schema/mutation'
-import { AuthPayload, Post, PostCreateInput, PostOrderByUpdatedAtInput, SortOrder, User, UserCreateInput, UserUniqueInput } from './schema/types'
-
+import { AuthPayload, Tweet, PostCreateInput, PostOrderByUpdatedAtInput, SortOrder, User, UserCreateInput, UserUniqueInput } from './schema/types'
 export const DateTime = asNexusMethod(DateTimeResolver, 'date')
 const schemaWithoutPermissions = makeSchema({
   types: [
     Query,
     Mutation,
-    Post,
+    Tweet,
     User,
     AuthPayload,
     UserUniqueInput,
