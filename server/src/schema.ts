@@ -10,24 +10,12 @@ import {
   
 } from 'nexus'
 import { DateTimeResolver } from 'graphql-scalars'
-import { Query } from './schema/query'
-import { Mutation } from './schema/mutation'
-import { AuthPayload, Tweet, PostCreateInput, PostOrderByUpdatedAtInput, SortOrder, User, UserCreateInput, UserUniqueInput } from './schema/types'
-export const DateTime = asNexusMethod(DateTimeResolver, 'date')
+// import { Query } from './types/query'
+// import { Mutation } from './types/mutation'
+import * as types from './types/types'
+
 const schemaWithoutPermissions = makeSchema({
-  types: [
-    Query,
-    Mutation,
-    Tweet,
-    User,
-    AuthPayload,
-    UserUniqueInput,
-    UserCreateInput,
-    PostCreateInput,
-    SortOrder,
-    PostOrderByUpdatedAtInput,
-    DateTime,
-  ],
+  types,
   outputs: {
     schema: __dirname + '/../schema.graphql',
     typegen: __dirname + '/generated/nexus.ts',

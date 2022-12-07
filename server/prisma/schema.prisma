@@ -8,59 +8,57 @@ datasource db {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
-  password     String
-  name         String?
-  tweets       Tweet[]   @relation("own_tweets")
-  liked_tweets Tweet[]   @relation("liked_tweets")
-  comments     Comment[]
-  replies      Reply[]
-  followedBy   Follows[] @relation("following")
-  following    Follows[] @relation("follower")
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  name          String?
+  profile       Profile?
+  tweets        Tweet[]  @relation("own_tweets")
+  liked_tweets  Tweet[]  @relation("liked_tweets")
+  replies       Reply[]
+  liked_replies Reply[]  @relation("liked_replies")
+  replied       Reply[]  @relation("replied")
+  followedBy    Follow[] @relation("following")
+  following     Follow[] @relation("follower")
+}
+
+model Profile {
+  birthday String?
+  bio      String?
+  location String?
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @unique
 }
 
 model Tweet {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime? @updatedAt
   content     String
   liked_users User[]    @relation("liked_tweets")
   author      User?     @relation("own_tweets", fields: [authorId], references: [id])
-  authorId    Int?
-  comments    Comment[]
-}
-
-model Comment {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  content   String
-  likes     Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-  tweet     Tweet?   @relation(fields: [tweetId], references: [id])
-  tweetId   Int?
-  reply     Reply[]
+  authorId    String
+  replies     Reply[]
 }
 
 model Reply {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  content   String
-  likes     Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-  comment   Comment? @relation(fields: [commentId], references: [id])
-  commentId Int?
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  content       String
+  liked_users   User[]   @relation("liked_replies")
+  replied_users User[]   @relation("replied")
+  author        User?    @relation(fields: [authorId], references: [id])
+  authorId      String?
+  tweet         Tweet?   @relation(fields: [tweetId], references: [id])
+  tweetId       String?
 }
 
-model Follows {
-  follower    User @relation("follower", fields: [followerId], references: [id])
-  followerId  Int
-  following   User @relation("following", fields: [followingId], references: [id])
-  followingId Int
+model Follow {
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
 
-  @@id([followerId, followingId])
+  @@unique([followerId, followingId])
 }

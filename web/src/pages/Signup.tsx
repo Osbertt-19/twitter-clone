@@ -8,6 +8,9 @@ const SIGNUP_SCHEMA = gql`
   mutation Signup($email: String!, $password: String!, $name: String) {
     signup(email: $email, password: $password, name: $name) {
       token
+      user {
+        name
+      }
     }
   }
 `;
@@ -55,6 +58,7 @@ export default () => {
               password: values.password,
             },
           });
+          console.log(response);
           localStorage.setItem("token", response.data.signup.token);
           setSubmitting(false);
           navigate("/");
