@@ -34,10 +34,11 @@ export default () => {
     <div>
       <button onClick={openModal}>Log Out</button>
       <ReactModal
+        ariaHideApp={false}
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="Logout Modal"
       >
         <div>Are you sure you want to log out?</div>
         <button style={{ marginRight: "4px" }} onClick={handleLogOut}>

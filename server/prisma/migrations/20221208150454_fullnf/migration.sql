@@ -10,6 +10,8 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Profile" (
+    "profilePictureUrl" TEXT,
+    "coverPhotoUrl" TEXT,
     "birthday" TEXT,
     "bio" TEXT,
     "location" TEXT,
@@ -21,7 +23,8 @@ CREATE TABLE "Tweet" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
-    "content" TEXT NOT NULL,
+    "caption" TEXT NOT NULL,
+    "photoUrl" TEXT NOT NULL,
     "authorId" TEXT NOT NULL,
 
     CONSTRAINT "Tweet_pkey" PRIMARY KEY ("id")
@@ -32,11 +35,33 @@ CREATE TABLE "Reply" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "content" TEXT NOT NULL,
+    "caption" TEXT NOT NULL,
+    "photoUrl" TEXT NOT NULL,
     "authorId" TEXT,
     "tweetId" TEXT,
+    "retweetId" TEXT,
 
     CONSTRAINT "Reply_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Retweet" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+    "caption" TEXT NOT NULL,
+    "tweetId" TEXT NOT NULL,
+    "authorId" TEXT NOT NULL,
+
+    CONSTRAINT "Retweet_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Tag" (
+    "slug" TEXT NOT NULL,
+    "tagName" TEXT NOT NULL,
+
+    CONSTRAINT "Tag_pkey" PRIMARY KEY ("slug")
 );
 
 -- CreateTable
@@ -59,6 +84,18 @@ CREATE TABLE "_liked_replies" (
 
 -- CreateTable
 CREATE TABLE "_replied" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_liked_retweets" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_TagToTweet" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -90,6 +127,18 @@ CREATE UNIQUE INDEX "_replied_AB_unique" ON "_replied"("A", "B");
 -- CreateIndex
 CREATE INDEX "_replied_B_index" ON "_replied"("B");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_liked_retweets_AB_unique" ON "_liked_retweets"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_liked_retweets_B_index" ON "_liked_retweets"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_TagToTweet_AB_unique" ON "_TagToTweet"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_TagToTweet_B_index" ON "_TagToTweet"("B");
+
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -101,6 +150,15 @@ ALTER TABLE "Reply" ADD CONSTRAINT "Reply_authorId_fkey" FOREIGN KEY ("authorId"
 
 -- AddForeignKey
 ALTER TABLE "Reply" ADD CONSTRAINT "Reply_tweetId_fkey" FOREIGN KEY ("tweetId") REFERENCES "Tweet"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reply" ADD CONSTRAINT "Reply_retweetId_fkey" FOREIGN KEY ("retweetId") REFERENCES "Retweet"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Retweet" ADD CONSTRAINT "Retweet_tweetId_fkey" FOREIGN KEY ("tweetId") REFERENCES "Tweet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Retweet" ADD CONSTRAINT "Retweet_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Follow" ADD CONSTRAINT "Follow_followerId_fkey" FOREIGN KEY ("followerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -125,3 +183,15 @@ ALTER TABLE "_replied" ADD CONSTRAINT "_replied_A_fkey" FOREIGN KEY ("A") REFERE
 
 -- AddForeignKey
 ALTER TABLE "_replied" ADD CONSTRAINT "_replied_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_liked_retweets" ADD CONSTRAINT "_liked_retweets_A_fkey" FOREIGN KEY ("A") REFERENCES "Retweet"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_liked_retweets" ADD CONSTRAINT "_liked_retweets_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TagToTweet" ADD CONSTRAINT "_TagToTweet_A_fkey" FOREIGN KEY ("A") REFERENCES "Tag"("slug") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TagToTweet" ADD CONSTRAINT "_TagToTweet_B_fkey" FOREIGN KEY ("B") REFERENCES "Tweet"("id") ON DELETE CASCADE ON UPDATE CASCADE;

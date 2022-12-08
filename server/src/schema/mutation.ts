@@ -73,7 +73,7 @@ export const Mutation = mutationType({
       },
       resolve: async (_, { birthday, bio, location }, context: Context) => {
         const userId = getUserId(context)
-        return context.prisma.user.update({
+        return await context.prisma.user.update({
           where: { id: userId },
           data: {
             profile: {
@@ -94,7 +94,7 @@ export const Mutation = mutationType({
       },
       resolve: async (_, args, context: Context) => {
         const userId = getUserId(context)
-        return context.prisma.tweet.create({
+        return await context.prisma.tweet.create({
           data: {
             content: args.content,
             authorId: userId,
@@ -110,7 +110,7 @@ export const Mutation = mutationType({
         content: nonNull(stringArg()),
       },
       resolve: async (_, { id, content }, context: Context) => {
-        return context.prisma.tweet.update({
+        return await context.prisma.tweet.update({
           where: { id: id || undefined },
           data: { content },
         })
@@ -122,8 +122,8 @@ export const Mutation = mutationType({
       args: {
         id: nonNull(stringArg()),
       },
-      resolve: (_, { id }, context: Context) => {
-        return context.prisma.tweet.delete({
+      resolve: async (_, { id }, context: Context) => {
+        return await context.prisma.tweet.delete({
           where: { id: id },
         })
       },
