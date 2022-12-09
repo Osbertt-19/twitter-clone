@@ -6,7 +6,7 @@ import { getUserId } from '../utils'
 
 export * from './mutation'
 export * from './query'
-export * from './objectTypes'
+export * from './objectTypes/index'
 export const DateTime = asNexusMethod(DateTimeResolver, 'date')
 export const Date = asNexusMethod(DateResolver, 'date')
 

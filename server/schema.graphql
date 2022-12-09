@@ -17,12 +17,6 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-type Follow {
-  follower: User
-  following: User
-  id: Int!
-}
-
 type Mutation {
   createReply(content: String!, replied_userIds: [Int], tweetId: Int!): Reply
   createTweet(content: String!): Tweet
@@ -38,7 +32,9 @@ type Mutation {
 type Profile {
   bio: String
   birthday: String
+  coverPhotoUrl: String
   location: String
+  profilePictureUrl: String
   user: User
 }
 
@@ -53,33 +49,60 @@ type Query {
 
 type Reply {
   author: User
-  content: String!
+  caption: String
   createdAt: DateTime!
   id: String!
   liked_users: [User]
+  photoUrl: String
   replied_users: [User]
+  retweet: Retweet
   tweet: Tweet
   updatedAt: DateTime!
 }
 
-type Tweet {
+type Retweet {
   author: User
-  content: String!
+  caption: String
   createdAt: DateTime!
   id: String!
   liked_users: [User]
+  replies: Reply
+  tags: [Tag]
+  tweet: Tweet
+  updatedAt: DateTime!
+}
+
+type Tag {
+  retweets: [Retweet]
+  slug: String!
+  tagName: String!
+  tweets: [Tweet]
+}
+
+type Tweet {
+  author: User
+  caption: String
+  createdAt: DateTime!
+  id: String!
+  liked_users: [User]
+  photoUrl: String
   replies: [Reply]
+  retweets: [Retweet]
+  tags: [Tag]
   updatedAt: DateTime
 }
 
 type User {
   email: String!
-  followedBy: [Follow]
-  following: [Follow]
+  followedBy: [User]
+  following: [User]
   id: String!
+  liked_replies: [Reply]
+  liked_retweets: [Retweet]
   liked_tweets: [Tweet]
   name: String
   profile: Profile
   replies: [Reply]
+  retweets: [Retweet]
   tweets: [Tweet]
 }

@@ -12,7 +12,7 @@ import {
 import { DateTimeResolver } from 'graphql-scalars'
 // import { Query } from './types/query'
 // import { Mutation } from './types/mutation'
-import * as types from './schema'
+import * as types from './schema/index'
 
 const schemaWithoutPermissions = makeSchema({
   types,

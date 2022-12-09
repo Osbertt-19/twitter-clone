@@ -11,12 +11,12 @@ import {
   mutationType,
 } from 'nexus'
 import { Context } from '../context'
-import { prisma, User } from '@prisma/client'
+import { AuthPayload } from './objectTypes'
 
 export const Mutation = mutationType({
   definition(t) {
     t.field('signup', {
-      type: 'AuthPayload',
+      type: AuthPayload,
       args: {
         name: stringArg(),
         email: nonNull(stringArg()),
@@ -24,7 +24,7 @@ export const Mutation = mutationType({
       },
       resolve: async (_parent, args, context: Context) => {
         const hashedPassword = await hash(args.password, 10)
-        const user: User = await context.prisma.user.create({
+        const user = await context.prisma.user.create({
           data: {
             name: args.name,
             email: args.email,

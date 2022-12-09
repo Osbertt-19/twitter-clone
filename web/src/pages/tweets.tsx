@@ -4,7 +4,7 @@ const TWEETS_SCHEMA = gql`
   query TWEETS {
     tweets {
       id
-      content
+      caption
       author {
         name
       }
@@ -13,7 +13,7 @@ const TWEETS_SCHEMA = gql`
 `;
 type Tweet = {
   id: String;
-  content: String;
+  caption: String;
   author: { name: String };
 };
 export default () => {
@@ -26,7 +26,7 @@ export default () => {
         {data.tweets.map((tweet: Tweet) => (
           <div key={`${tweet.id}`}>
             <h4>
-              {tweet.author.name} {tweet.content}
+              {tweet.author.name} {tweet.caption}
             </h4>
           </div>
         ))}
