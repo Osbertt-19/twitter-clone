@@ -8,20 +8,20 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(uuid())
-  email          String    @unique
+  id             String      @id @default(uuid())
+  email          String      @unique
   password       String
   name           String?
   profile        Profile?
-  tweets         Tweet[]   @relation("own_tweets")
-  liked_tweets   Tweet[]   @relation("liked_tweets")
+  tweets         Tweet[]     @relation("own_tweets")
+  liked_tweets   Tweet[]     @relation("liked_tweets")
   replies        Reply[]
-  liked_replies  Reply[]   @relation("liked_replies")
-  retweets       Retweet[] @relation("own_retweets")
-  liked_retweets Retweet[] @relation("liked_retweets")
-  replied        Reply[]   @relation("replied")
-  followedBy     Follow[]  @relation("following")
-  following      Follow[]  @relation("follower")
+  liked_replies  Reply[]     @relation("liked_replies")
+  retweets       Retweet[]   @relation("own_retweets")
+  liked_retweets Retweet[]   @relation("liked_retweets")
+  replied        Reply[]     @relation("replied")
+  followedBy     User[]      @relation("UserFollows")
+  following      User[]      @relation("UserFollows")
 }
 
 model Profile {
@@ -35,59 +35,54 @@ model Profile {
 }
 
 model Tweet {
-  id          String    @id @default(uuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-  caption     String
-  photoUrl    String
-  author      User?     @relation("own_tweets", fields: [authorId], references: [id])
-  authorId    String
-  tags        Tag[]
-  liked_users User[]    @relation("liked_tweets")
-  replies     Reply[]
-  retweets    Retweet[]
+  id               String      @id @default(uuid())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime?   @updatedAt
+  caption          String
+  photoUrl         String
+  author           User?       @relation("own_tweets", fields: [authorId], references: [id])
+  authorId         String
+  tags             Tag[]
+  liked_users      User[]      @relation("liked_tweets")
+  replies          Reply[]
+  retweets         Retweet[]
+  
 }
 
 model Reply {
-  id            String   @id @default(uuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  caption       String
-  photoUrl      String
-  liked_users   User[]   @relation("liked_replies")
-  replied_users User[]   @relation("replied")
-  author        User?    @relation(fields: [authorId], references: [id])
-  authorId      String?
-  tweet         Tweet?   @relation(fields: [tweetId], references: [id])
-  tweetId       String?
-  retweet       Retweet? @relation(fields: [retweetId], references: [id])
-  retweetId     String?
+  id               String      @id @default(uuid())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  caption          String
+  photoUrl         String
+  liked_users      User[]      @relation("liked_replies")
+  replied_users    User[]      @relation("replied")
+  author           User?       @relation(fields: [authorId], references: [id])
+  authorId         String?
+  tweet            Tweet?      @relation(fields: [tweetId], references: [id])
+  tweetId          String?
+  retweet          Retweet?    @relation(fields: [retweetId], references: [id])
+  retweetId        String?
 }
 
 model Retweet {
-  id          String    @id @default(uuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-  caption     String
-  tweet       Tweet?    @relation(fields: [tweetId], references: [id])
-  tweetId     String
-  author      User?     @relation("own_retweets", fields: [authorId], references: [id])
-  authorId    String
-  liked_users User[]    @relation("liked_retweets")
-  replies     Reply[]
+  id               String      @id @default(uuid())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime?   @updatedAt
+  caption          String
+  tweet            Tweet?      @relation(fields: [tweetId], references: [id])
+  tweetId          String
+  author           User?       @relation("own_retweets", fields: [authorId], references: [id])
+  authorId         String
+  tags             Tag[]
+  liked_users      User[]      @relation("liked_retweets")
+  replies          Reply[]
+  
 }
 
 model Tag {
-  slug    String  @id
-  tagName String
-  tweets  Tweet[]
-}
-
-model Follow {
-  follower    User   @relation("follower", fields: [followerId], references: [id])
-  followerId  String
-  following   User   @relation("following", fields: [followingId], references: [id])
-  followingId String
-
-  @@unique([followerId, followingId])
+  slug     String    @id
+  tagName  String
+  tweets   Tweet[]
+  retweets Retweet[]
 }

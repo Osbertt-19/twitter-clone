@@ -17,6 +17,8 @@ export const Profile = objectType({
             .user()
         },
       })
+      t.string('profilePictureUrl')
+      t.string('coverPhotoUrl')
       t.string('birthday')
       t.string('bio')
       t.string('location')

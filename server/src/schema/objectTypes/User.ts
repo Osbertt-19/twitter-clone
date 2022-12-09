@@ -1,8 +1,8 @@
 import { objectType } from "nexus"
 import { Context } from "../../context"
-import { Follow } from "./Follow"
 import { Profile } from "./Profile"
 import { Reply } from "./Reply"
+import { Retweet } from "./Retweet"
 import { Tweet } from "./Tweet"
 
 export const User = objectType({
@@ -13,8 +13,8 @@ export const User = objectType({
       t.string('name')
       t.field('profile', {
         type: Profile,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined },
             }).profile()
@@ -22,8 +22,8 @@ export const User = objectType({
       })
       t.list.field('tweets', {
         type: Tweet,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined }
             }).tweets()
@@ -31,8 +31,8 @@ export const User = objectType({
       })   
       t.list.field('liked_tweets', {
         type: Tweet,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined },
             })
@@ -41,8 +41,8 @@ export const User = objectType({
       })
       t.list.field('replies', {
         type: Reply,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined },
             })
@@ -51,8 +51,8 @@ export const User = objectType({
       })
       t.list.field('liked_replies', {
         type: Reply,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined },
             })
@@ -61,8 +61,8 @@ export const User = objectType({
       })
       t.list.field('retweets', {
         type: Retweet,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined }
             }).retweets()
@@ -70,8 +70,8 @@ export const User = objectType({
       })   
       t.list.field('liked_retweets', {
         type: Retweet,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
               where: { id: _parent.id || undefined },
             })
@@ -79,24 +79,22 @@ export const User = objectType({
         },
       })
       t.list.field('followedBy', {
-        type: Follow,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        type: User,
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
-              where: { id: _parent.id || undefined },
-            })
-            .followedBy()
+              where: { id: _parent.id || undefined }
+            }).followedBy()
         },
-      })
+      }) 
       t.list.field('following', {
-        type: Follow,
-        resolve: (_parent, args, context: Context) => {
-          return context.prisma.user
+        type: User,
+        resolve: async(_parent, args, context: Context) => {
+          return await context.prisma.user
             .findUnique({
-              where: { id: _parent.id || undefined },
-            })
-            .following()
+              where: { id: _parent.id || undefined }
+            }).following()
         },
-      })
+      }) 
     },
   })
