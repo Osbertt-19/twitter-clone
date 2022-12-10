@@ -1,38 +1,16 @@
-import { permissions } from './permissions'
-import { APP_SECRET, getUserId } from './utils'
-import { compare, hash } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
-import { applyMiddleware } from 'graphql-middleware'
+import * as path from 'path'
+import { makeExecutableSchema } from "graphql-tools"
 import {
-  makeSchema,
-  
-  asNexusMethod,
-  
-} from 'nexus'
-import { DateTimeResolver } from 'graphql-scalars'
-// import { Query } from './types/query'
-// import { Mutation } from './types/mutation'
-import * as types from './schema/index'
+  fileLoader,
+  mergeTypes,
+  mergeResolvers,
+} from "merge-graphql-schemas"
 
-const schemaWithoutPermissions = makeSchema({
-  types,
-  outputs: {
-    schema: __dirname + '/../schema.graphql',
-    typegen: __dirname + '/generated/nexus.ts',
-  },
-  contextType: {
-    module: require.resolve('./context'),
-    export: 'Context',
-  },
-  sourceTypes: {
-    modules: [
-      {
-        module: '@prisma/client',
-        alias: 'prisma',
-      },
-    ],
-  },
-})
+const typeDefs = fileLoader(path.join(__dirname, "/modules/**/*.graphql"));
+const resolvers = fileLoader(path.join(__dirname, "/modules/**/*.ts"));
 
-export const schema = applyMiddleware(schemaWithoutPermissions)
-// export const schema = applyMiddleware(schemaWithoutPermissions, permissions)
+export const schema = makeExecutableSchema({
+  typeDefs: mergeTypes(typeDefs),
+  resolvers: mergeResolvers(resolvers),
+});
+

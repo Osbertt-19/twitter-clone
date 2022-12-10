@@ -11,7 +11,9 @@ import {
   mutationType,
 } from 'nexus'
 import { Context } from '../context'
-import { AuthPayload } from './objectTypes'
+import { AuthPayload, Profile } from './objectTypes'
+import { string } from 'yup'
+import slugify from '@sindresorhus/slugify'
 
 export const Mutation = mutationType({
   definition(t) {
@@ -45,7 +47,7 @@ export const Mutation = mutationType({
         password: nonNull(stringArg()),
       },
       resolve: async (_parent, { email, password }, context: Context) => {
-        const user: User | null = await context.prisma.user.findUnique({
+        const user = await context.prisma.user.findUnique({
           where: {
             email,
           },
@@ -67,19 +69,37 @@ export const Mutation = mutationType({
     t.field('editProfile', {
       type: 'Profile',
       args: {
+        profilepictureUrl: stringArg(),
+        coverphotoUrl: stringArg(),
         birthday: stringArg(),
         bio: stringArg(),
         location: stringArg(),
       },
-      resolve: async (_, { birthday, bio, location }, context: Context) => {
+      resolve: async (
+        _,
+        { birthday, bio, location, profilePictureUrl, coverPhotoUrl },
+        context: Context,
+      ) => {
         const userId = getUserId(context)
         return await context.prisma.user.update({
           where: { id: userId },
           data: {
             profile: {
               upsert: {
-                create: { birthday, bio, location },
-                update: { birthday,bio, location },
+                create: {
+                  birthday,
+                  bio,
+                  location,
+                  profilePictureUrl,
+                  coverPhotoUrl,
+                },
+                update: {
+                  birthday,
+                  bio,
+                  location,
+                  profilePictureUrl,
+                  coverPhotoUrl,
+                },
               },
             },
           },
@@ -90,15 +110,33 @@ export const Mutation = mutationType({
     t.field('createTweet', {
       type: 'Tweet',
       args: {
-        content: nonNull(stringArg()),
+        caption: stringArg(),
+        photoUrl: stringArg(),
+        tags: list(stringArg()),
       },
-      resolve: async (_, args, context: Context) => {
+      resolve: async (_, { caption, photoUrl, tags }, context: Context) => {
         const userId = getUserId(context)
-        return await context.prisma.tweet.create({
+        const tweet=await context.prisma.tweet.create({
           data: {
-            content: args.content,
+            caption,
+            photoUrl,
             authorId: userId,
           },
+        })
+        type Tagobj={
+          tagName:String
+        }
+        const tweetWithTags=await context.prisma.tweet.update({
+          where:{id:tweet.id},
+          data:{
+            tags:{
+              set:tags.map((tag:String)=>{
+                const obj={} as Tagobj
+                obj.tagName=tag
+                return obj
+              })
+            }
+          }
         })
       },
     })
@@ -107,12 +145,16 @@ export const Mutation = mutationType({
       type: 'Tweet',
       args: {
         id: nonNull(stringArg()),
-        content: nonNull(stringArg()),
+        caption: stringArg(),
+        photoUrl:stringArg(),
       },
-      resolve: async (_, { id, content }, context: Context) => {
+      resolve: async (_, { id, caption,photoUrl}, context: Context) => {
         return await context.prisma.tweet.update({
           where: { id: id || undefined },
-          data: { content },
+          data: { 
+            caption,
+            photoUrl
+          },
         })
       },
     })
@@ -176,29 +218,44 @@ export const Mutation = mutationType({
     t.field('createReply', {
       type: 'Reply',
       args: {
-        tweetId: nonNull(intArg()),
-        content: nonNull(stringArg()),
-        replied_userIds: list(intArg()),
+        tweetId: nonNull(stringArg()),
+        caption: stringArg(),
+        photoUrl:stringArg(),
+        replied_userIds: list(stringArg()),
       },
-      resolve: (_, args, context: Context) => {
+      resolve: async(_, {tweetId,caption,photoUrl,replied_userIds}, context: Context) => {
         const userId = getUserId(context)
         type UserWhereUniqueInput = {
-          id?: number
-          email?: string
+          id?: String
+          email?: String
         }
-        const arr = args.replied_userIds?.map((user) => {
-          const obj: UserWhereUniqueInput = {}
-          obj.id = user!
-          return obj
-        })
-        return context.prisma.reply.create({
+        // const arr = args.replied_userIds?.map((user) => {
+        //   const obj: UserWhereUniqueInput = {}
+        //   obj.id = user!
+        //   return obj
+        // })
+        const reply=await context.prisma.reply.create({
           data: {
-            content: args.content,
+            caption: caption,
+            photoUrl:photoUrl,
             authorId: userId,
-            tweetId: args.tweetId,
-            replied_users: { connect: arr },
+            tweetId: tweetId,
           },
         })
+        // const replyWithRepliedUsers=await context.prisma.reply.update({
+        //   where:{id:reply.id},
+        //   data:{
+        //     replied_users:{
+        //       set:{
+        //         replied_userIds.map((user:String) => {
+        //             const obj: UserWhereUniqueInput = {}
+        //             obj.id = user
+        //             return obj
+        //           })
+        //       }
+        //     }
+        //   }
+        // })
       },
     })
 
@@ -206,12 +263,13 @@ export const Mutation = mutationType({
       type: 'Reply',
       args: {
         id: nonNull(stringArg()),
-        content: nonNull(stringArg()),
+        caption: stringArg(),
+        photoUrl:stringArg(),
       },
-      resolve: async (_, args, context: Context) => {
+      resolve: async (_, {id,caption,photoUrl}, context: Context) => {
         return context.prisma.reply.update({
-          where: { id: args.id || undefined },
-          data: { content: args.content },
+          where: { id:id || undefined },
+          data: { caption,photoUrl},
         })
       },
     })

@@ -6,7 +6,6 @@ import { Tweet } from "./Tweet"
 export const Tag = objectType({
     name: 'Tag',
     definition(t) {
-      t.nonNull.string('slug')
       t.nonNull.string('tagName')
       t.list.field('tweets', {
         type: Tweet,

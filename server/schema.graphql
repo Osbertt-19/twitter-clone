@@ -18,13 +18,13 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Mutation {
-  createReply(content: String!, replied_userIds: [Int], tweetId: Int!): Reply
-  createTweet(content: String!): Tweet
+  createReply(caption: String, photoUrl: String, replied_userIds: [String], tweetId: String!): Reply
+  createTweet(caption: String, photoUrl: String, tags: [String]): Tweet
   deleteReply(id: String!): Reply
   deleteTweet(id: String!): Tweet
-  editProfile(bio: String, birthday: String, location: String): Profile
-  editReply(content: String!, id: String!): Reply
-  editTweet(content: String!, id: String!): Tweet
+  editProfile(bio: String, birthday: String, coverphotoUrl: String, location: String, profilepictureUrl: String): Profile
+  editReply(caption: String, id: String!, photoUrl: String): Reply
+  editTweet(caption: String, id: String!, photoUrl: String): Tweet
   login(email: String!, password: String!): AuthPayload
   signup(email: String!, name: String, password: String!): AuthPayload
 }
@@ -74,7 +74,6 @@ type Retweet {
 
 type Tag {
   retweets: [Retweet]
-  slug: String!
   tagName: String!
   tweets: [Tweet]
 }

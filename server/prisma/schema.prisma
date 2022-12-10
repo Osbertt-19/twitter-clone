@@ -81,8 +81,7 @@ model Retweet {
 }
 
 model Tag {
-  slug     String    @id
-  tagName  String
+  tagName  String @id
   tweets   Tweet[]
   retweets Retweet[]
 }

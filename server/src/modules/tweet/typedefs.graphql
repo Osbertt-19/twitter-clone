@@ -1,0 +1,25 @@
+type Tweet {
+  author: User
+  caption: String
+  createdAt: DateTime!
+  id: String!
+  liked_users: [User]
+  photoUrl: String
+  replies: [Reply]
+  retweets: [Retweet]
+  tags: [Tag]
+  updatedAt: DateTime
+}
+
+type Query {
+  feed(searchString: String, skip: Int, take: Int): [Tweet!]!
+  tweetById(id: String): Tweet
+  tweets: [Tweet]
+  tweetsByUser(id: String): [Tweet]
+}
+
+type Mutation {
+  createTweet(caption: String, photoUrl: String, tags: [String]): Tweet
+  deleteTweet(id: String!): Tweet
+  editTweet(caption: String, id: String!, photoUrl: String): Tweet
+}
