@@ -2,7 +2,6 @@ import { objectType } from 'nexus'
 import { Context } from '../../context'
 import { Reply } from './Reply'
 import { Retweet } from './Retweet'
-import { Tag } from './Tag'
 import { User } from './User'
 
 export const Tweet = objectType({
@@ -53,15 +52,6 @@ export const Tweet = objectType({
           .retweets()
       },
     })
-    t.list.field('tags', {
-      type: Tag,
-      resolve: async (_parent, args, context: Context) => {
-        return await context.prisma.tweet
-          .findUnique({
-            where: { id: _parent.id || undefined },
-          })
-          .tags()
-      },
-    })
+    
   },
 })

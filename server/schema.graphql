@@ -19,7 +19,7 @@ scalar DateTime
 
 type Mutation {
   createReply(caption: String, photoUrl: String, replied_userIds: [String], tweetId: String!): Reply
-  createTweet(caption: String, photoUrl: String, tags: [String]): Tweet
+  createTweet(caption: String, photoUrl: String): Tweet
   deleteReply(id: String!): Reply
   deleteTweet(id: String!): Tweet
   editProfile(bio: String, birthday: String, coverphotoUrl: String, location: String, profilepictureUrl: String): Profile
@@ -54,7 +54,6 @@ type Reply {
   id: String!
   liked_users: [User]
   photoUrl: String
-  replied_users: [User]
   retweet: Retweet
   tweet: Tweet
   updatedAt: DateTime!
@@ -67,15 +66,8 @@ type Retweet {
   id: String!
   liked_users: [User]
   replies: Reply
-  tags: [Tag]
   tweet: Tweet
   updatedAt: DateTime!
-}
-
-type Tag {
-  retweets: [Retweet]
-  tagName: String!
-  tweets: [Tweet]
 }
 
 type Tweet {
@@ -87,7 +79,6 @@ type Tweet {
   photoUrl: String
   replies: [Reply]
   retweets: [Retweet]
-  tags: [Tag]
   updatedAt: DateTime
 }
 

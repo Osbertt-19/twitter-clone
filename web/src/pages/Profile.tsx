@@ -13,14 +13,14 @@ const ME_SCHEMA = gql`
       }
       tweets {
         id
-        content
+        caption
       }
     }
   }
 `;
 type Tweet = {
   id: String;
-  content: String;
+  caption: String;
 };
 export default () => {
   const { loading, error, data } = useQuery(ME_SCHEMA);
@@ -43,7 +43,7 @@ export default () => {
         <div>tweets</div>
         <div>
           {data.me.tweets.map((tweet: Tweet) => (
-            <div key={`${tweet.id}`}>{tweet.content}</div>
+            <div key={`${tweet.id}`}>{tweet.caption}</div>
           ))}
         </div>
       </div>

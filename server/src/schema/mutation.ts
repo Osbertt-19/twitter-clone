@@ -112,32 +112,17 @@ export const Mutation = mutationType({
       args: {
         caption: stringArg(),
         photoUrl: stringArg(),
-        tags: list(stringArg()),
       },
-      resolve: async (_, { caption, photoUrl, tags }, context: Context) => {
+      resolve: async (_, { caption, photoUrl }, context: Context) => {
         const userId = getUserId(context)
-        const tweet=await context.prisma.tweet.create({
+        return await context.prisma.tweet.create({
           data: {
-            caption,
-            photoUrl,
+            caption:caption,
+            photoUrl:photoUrl,
             authorId: userId,
           },
         })
-        type Tagobj={
-          tagName:String
-        }
-        const tweetWithTags=await context.prisma.tweet.update({
-          where:{id:tweet.id},
-          data:{
-            tags:{
-              set:tags.map((tag:String)=>{
-                const obj={} as Tagobj
-                obj.tagName=tag
-                return obj
-              })
-            }
-          }
-        })
+        
       },
     })
 

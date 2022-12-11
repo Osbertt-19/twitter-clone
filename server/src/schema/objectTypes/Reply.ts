@@ -22,16 +22,6 @@ export const Reply = objectType({
           .liked_users()
       },
     })
-    t.list.field('replied_users', {
-      type: User,
-      resolve: async (_parent, args, context: Context) => {
-        return await context.prisma.reply
-          .findUnique({
-            where: { id: _parent.id || undefined },
-          })
-          .replied_users()
-      },
-    })
     t.field('author', {
       type: User,
       resolve: async(_parent, args, context: Context) => {

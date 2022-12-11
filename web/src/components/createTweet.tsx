@@ -4,26 +4,30 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 const CREATETWEET_SCHEMA = gql`
-  mutation CreateTweet($content: String!) {
-    createTweet(content: $content) {
+  mutation CreateTweet($caption: String,$photoUrl:String) {
+    createTweet(caption:$caption,photoUrl:$photoUrl) {
       author {
         name
       }
-      content
+      caption
+      photoUrl
       createdAt
       id
     }
   }
 `;
 type CreateTweetValue = {
-  content: String;
+  caption:String 
+  photoUrl:String 
 };
 export default () => {
   const initialValues: CreateTweetValue = {
-    content: "",
+    caption:"",
+    photoUrl:"",
   };
   const validationSchema = Yup.object({
-    content: Yup.string().required("Email Required"),
+    caption: Yup.string(),
+    photoUrl:Yup.string(),
   });
   const navigate = useNavigate();
   const [createTweet, { data }] = useMutation(CREATETWEET_SCHEMA);
@@ -42,8 +46,10 @@ export default () => {
         }}
       >
         <Form>
-          <Field name="content" type="text" placeholder="What's happening?" />
-          <ErrorMessage name="content" component={"div"} />
+          <Field name="caption" type="text" placeholder="What's happening?" />
+          <ErrorMessage name="caption" component={"div"} />
+          <Field name="photoUrl" type="text" placeholder="" />
+          <ErrorMessage name="photoUrl" component={"div"} />
           <button type="submit">Tweet</button>
         </Form>
       </Formik>
