@@ -5,8 +5,7 @@ import Tweets from "./tweets";
 
 export default () => {
   return (
-    <div>
-      <Me/>
+    <div style={{position:"relative"}}>
       <CreateTweet />
       <Tweets/>
     </div>

@@ -1,41 +1,75 @@
+:root{
+  --twitterColor:#00acee;
+}
+
+
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+body{
+  margin:0;
+  padding:0;
+}
+a{
+  text-decoration: none;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+.register>form{
+  display: flex;
+  width:300px;
+  margin:100px auto 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.register>form>input,.register>form>button{
+  display:block;
+  height:50px;
+  width:100%;
+  margin-bottom:10px;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.register>form>button{
+  border-radius: 10px;
+  cursor:pointer;
+  background-color: #111111;
+  color:white;
+  padding:3px;
 }
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
+.register>form>div{
+  color:rgb(243, 34, 34);
+  align-self: flex-start;
+  margin-bottom: 5px;
 }
 
-.read-the-docs {
-  color: #888;
+.leftNav>button{
+  cursor:pointer;
+  background-color: inherit;
+  border: none;
+  font-size: 20px;
+  font-weight: 300;
 }
+.createTweet{
+  display:"flex";
+  flex-direction:"row";
+  gap:"30px";
+  justify-content: space-around;
+  align-items: stretch;
+}
+.createTweet>form>input{
+  height: 20px;
+  border:none;
+  font-size: large;
+}
+
+
+
+
+
+
+
+

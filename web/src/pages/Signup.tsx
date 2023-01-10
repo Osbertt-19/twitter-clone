@@ -43,10 +43,12 @@ export default () => {
       .required("Name Required"),
   });
   const navigate = useNavigate();
-  const [signup, { data }] = useMutation(SIGNUP_SCHEMA);
+  const [signup, { error }] = useMutation(SIGNUP_SCHEMA);
   return (
-    <div>
+    <div className="register">
       <Formik
+        validateOnChange={false}
+        validateOnBlur={false}
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -77,6 +79,7 @@ export default () => {
             placeholder="confirmPassword"
           />
           <ErrorMessage name="confirmPassword" component={"div"} />
+          <div>{error?.graphQLErrors[0].message}</div>
           <button type="submit">Sign Up</button>
         </Form>
       </Formik>

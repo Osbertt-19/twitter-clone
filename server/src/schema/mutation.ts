@@ -33,6 +33,27 @@ export const Mutation = mutationType({
             password: hashedPassword,
           },
         })
+        const userWithProfilePicture = await context.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            profile: {
+              upsert: {
+                create: {
+                  profilePictureUrl:
+                    'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg',
+                  coverPhotoUrl:
+                    'https://theoheartist.com/wp-content/uploads/sites/2/2015/01/fbdefault.png',
+                },
+                update: {
+                  profilePictureUrl:
+                    'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg',
+                  coverPhotoUrl:
+                    'https://theoheartist.com/wp-content/uploads/sites/2/2015/01/fbdefault.png',
+                },
+              },
+            },
+          },
+        })
         return {
           token: sign({ userId: user.id }, APP_SECRET),
           user,
@@ -117,12 +138,11 @@ export const Mutation = mutationType({
         const userId = getUserId(context)
         return await context.prisma.tweet.create({
           data: {
-            caption:caption,
-            photoUrl:photoUrl,
+            caption: caption,
+            photoUrl: photoUrl,
             authorId: userId,
           },
         })
-        
       },
     })
 
@@ -131,14 +151,14 @@ export const Mutation = mutationType({
       args: {
         id: nonNull(stringArg()),
         caption: stringArg(),
-        photoUrl:stringArg(),
+        photoUrl: stringArg(),
       },
-      resolve: async (_, { id, caption,photoUrl}, context: Context) => {
+      resolve: async (_, { id, caption, photoUrl }, context: Context) => {
         return await context.prisma.tweet.update({
           where: { id: id || undefined },
-          data: { 
+          data: {
             caption,
-            photoUrl
+            photoUrl,
           },
         })
       },
@@ -205,42 +225,18 @@ export const Mutation = mutationType({
       args: {
         tweetId: nonNull(stringArg()),
         caption: stringArg(),
-        photoUrl:stringArg(),
-        replied_userIds: list(stringArg()),
+        photoUrl: stringArg(),
       },
-      resolve: async(_, {tweetId,caption,photoUrl,replied_userIds}, context: Context) => {
+      resolve: async (_, { tweetId, caption, photoUrl }, context: Context) => {
         const userId = getUserId(context)
-        type UserWhereUniqueInput = {
-          id?: String
-          email?: String
-        }
-        // const arr = args.replied_userIds?.map((user) => {
-        //   const obj: UserWhereUniqueInput = {}
-        //   obj.id = user!
-        //   return obj
-        // })
-        const reply=await context.prisma.reply.create({
+        const reply = await context.prisma.reply.create({
           data: {
             caption: caption,
-            photoUrl:photoUrl,
+            photoUrl: photoUrl,
             authorId: userId,
             tweetId: tweetId,
           },
         })
-        // const replyWithRepliedUsers=await context.prisma.reply.update({
-        //   where:{id:reply.id},
-        //   data:{
-        //     replied_users:{
-        //       set:{
-        //         replied_userIds.map((user:String) => {
-        //             const obj: UserWhereUniqueInput = {}
-        //             obj.id = user
-        //             return obj
-        //           })
-        //       }
-        //     }
-        //   }
-        // })
       },
     })
 
@@ -249,12 +245,12 @@ export const Mutation = mutationType({
       args: {
         id: nonNull(stringArg()),
         caption: stringArg(),
-        photoUrl:stringArg(),
+        photoUrl: stringArg(),
       },
-      resolve: async (_, {id,caption,photoUrl}, context: Context) => {
+      resolve: async (_, { id, caption, photoUrl }, context: Context) => {
         return context.prisma.reply.update({
-          where: { id:id || undefined },
-          data: { caption,photoUrl},
+          where: { id: id || undefined },
+          data: { caption, photoUrl },
         })
       },
     })

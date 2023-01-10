@@ -2,7 +2,7 @@ import React from "react";
 import ReactModal from "react-modal";
 import { useNavigate } from "react-router-dom";
 
-const customStyles = {
+const logoutStyles = {
   content: {
     top: "50%",
     left: "50%",
@@ -13,7 +13,6 @@ const customStyles = {
   },
 };
 
-// Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
 export default () => {
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ export default () => {
         ariaHideApp={false}
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        style={customStyles}
+        style={logoutStyles}
         contentLabel="Logout Modal"
       >
         <div>Are you sure you want to log out?</div>

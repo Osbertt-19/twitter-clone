@@ -4,35 +4,31 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 const CREATETWEET_SCHEMA = gql`
-  mutation CreateTweet($caption: String,$photoUrl:String) {
-    createTweet(caption:$caption,photoUrl:$photoUrl) {
+  mutation CreateTweet($caption: String, $photoUrl: String) {
+    createTweet(caption: $caption, photoUrl: $photoUrl) {
       author {
         name
       }
       caption
-      photoUrl
       createdAt
       id
     }
   }
 `;
 type CreateTweetValue = {
-  caption:String 
-  photoUrl:String 
+  caption: String;
 };
 export default () => {
   const initialValues: CreateTweetValue = {
-    caption:"",
-    photoUrl:"",
+    caption: "",
   };
   const validationSchema = Yup.object({
     caption: Yup.string(),
-    photoUrl:Yup.string(),
   });
   const navigate = useNavigate();
   const [createTweet, { data }] = useMutation(CREATETWEET_SCHEMA);
   return (
-    <div>
+    <div className="createTweet">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -46,11 +42,18 @@ export default () => {
         }}
       >
         <Form>
+          <img
+            style={{
+              borderRadius: "50px",
+              border: "none",
+              width: "50px",
+              marginRight:"5px",
+              verticalAlign:"middle",
+            }}
+            src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg"
+          ></img>
           <Field name="caption" type="text" placeholder="What's happening?" />
-          <ErrorMessage name="caption" component={"div"} />
-          <Field name="photoUrl" type="text" placeholder="" />
-          <ErrorMessage name="photoUrl" component={"div"} />
-          <button type="submit">Tweet</button>
+          <button type="submit" style={{borderRadius:"10px",backgroundColor:"var(--twitterColor)",color:"white",padding:"10px",border:"none",width:"100px"}}>Tweet</button>
         </Form>
       </Formik>
     </div>

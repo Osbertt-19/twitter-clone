@@ -19,9 +19,15 @@ export default () => {
   if (error) navigate("/login");
   return (
     <div style={{ display: "flex" }}>
-      <LeftNav />
-      <Outlet />
-      <RightNav />
+      <div style={{ width: "30vw" }}>
+        <LeftNav />
+      </div>
+      <div style={{ width: "40vw" }}>
+        <Outlet />
+      </div>
+      <div style={{ width: "30vw" }}>
+        <RightNav />
+      </div>
     </div>
   );
 };

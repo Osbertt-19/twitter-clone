@@ -18,7 +18,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Mutation {
-  createReply(caption: String, photoUrl: String, replied_userIds: [String], tweetId: String!): Reply
+  createReply(caption: String, photoUrl: String, tweetId: String!): Reply
   createTweet(caption: String, photoUrl: String): Tweet
   deleteReply(id: String!): Reply
   deleteTweet(id: String!): Tweet

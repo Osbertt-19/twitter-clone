@@ -6,8 +6,12 @@ const TWEETBYID_SCHEMA = gql`
     tweetById(id: $id) {
       author {
         name
+        profile {
+        profilePictureUrl
       }
-      content
+      }
+      caption 
+      photoUrl
       createdAt
     }
   }
@@ -23,8 +27,10 @@ export default () => {
   if (error) return <div>{error.message}</div>;
   return (
     <div>
+      <img src={data.tweetById.author.profile.profilePictureUrl}></img>
       <div>{data.tweetById.author.name}</div>
-      <div>{data.tweetById.content}</div>
+      <div>{data.tweetById.caption}</div>
+      <div>{data.tweetById.photoUrl}</div>
     </div>
   );
 };
